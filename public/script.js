@@ -74,20 +74,60 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Handle Vote (Current implementation just shows updated data from sheet)
-    voteBtn.addEventListener('click', () => {
+    // Handle Vote (Submits to Vercel Serverless Function that writes to Google Sheets)
+    voteBtn.addEventListener('click', async () => {
         if (!selectedMenu) return;
 
-        // In a real app, this would submit to a Form/API that writes to the sheet.
-        // For now, we simulate the submission and refresh from the sheet.
         voteBtn.disabled = true;
-        voteBtn.textContent = '참여 완료';
+        voteBtn.textContent = '투표 처리 중...';
         menuCards.forEach(c => c.style.pointerEvents = 'none');
         
-        // Refresh data to show latest state from sheet
-        fetchVoteData();
-        
-        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        try {
+            // Live Server (포트 5500 또는 확장프로그램 기본 설정) 환경에서는 Vercel Function이 동작하지 않습니다.
+            const isLocalStaticServer = window.location.port !== '' && !window.location.port.startsWith('3000');
+            
+            if (isLocalStaticServer) {
+                console.warn('현재 순수 정적(HTML) 라이브 서버에서는 Vercel \'/api/vote\' 실행 불가. 서버 연결을 시뮬레이션 합니다.');
+                votes[selectedMenu]++;
+                voteBtn.textContent = '참여 완료 (Mock)';
+                updateResults();
+                resultsSection.classList.add('show');
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            }
+
+            // Call the Vercel Serverless Function to write the vote
+            const response = await fetch('/api/vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ menu: selectedMenu })
+            });
+
+            if (response.ok) {
+                // Success! Refresh data from the sheet.
+                voteBtn.textContent = '참여 완료';
+                await fetchVoteData(); // Read updated CSV and apply UI
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                const errorData = await response.json();
+                console.error('Server error response:', errorData);
+                alert('투표 처리에 실패했습니다. 서버 설정(환경변수 등)을 확인하세요.');
+                
+                // Fallback UX in case of error
+                voteBtn.textContent = '참여 완료 (임시 반영)';
+                votes[selectedMenu]++;
+                updateResults();
+                resultsSection.classList.add('show');
+            }
+        } catch (error) {
+            console.error('Error submitting vote:', error);
+            alert('네트워크 오류가 발생했습니다.');
+            voteBtn.disabled = false;
+            voteBtn.textContent = '투표하기';
+            menuCards.forEach(c => c.style.pointerEvents = 'auto');
+        }
     });
 
     function updateResults() {
