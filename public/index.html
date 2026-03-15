@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 점심 메뉴 투표 | 실시간 참여</title>
+    <meta name="description" content="오늘 무엇을 먹을지 고민되시나요? 실시간으로 인기 있는 점심 메뉴를 선택하고 결과를 확인해보세요.">
+    <!-- Google Fonts for premium typography -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container">
+        <header>
+            <h1>🍱 오늘 뭐 먹지?</h1>
+            <p class="subtitle">오늘의 점심 메뉴를 추천해주세요!</p>
+        </header>
+
+        <section class="voting-section">
+            <div class="menu-grid">
+                <div class="menu-card" data-id="bibimbap">
+                    <img src="assets/images/bibimbap.png" alt="비빔밥" class="menu-image">
+                    <div class="menu-info">
+                        <div class="menu-name">비빔밥</div>
+                    </div>
+                </div>
+                <div class="menu-card" data-id="tonkatsu">
+                    <img src="assets/images/tonkatsu.png" alt="돈까스" class="menu-image">
+                    <div class="menu-info">
+                        <div class="menu-name">돈까스</div>
+                    </div>
+                </div>
+                <div class="menu-card" data-id="gukbap">
+                    <img src="assets/images/gukbap.png" alt="국밥" class="menu-image">
+                    <div class="menu-info">
+                        <div class="menu-name">국밥</div>
+                    </div>
+                </div>
+                <div class="menu-card" data-id="salad">
+                    <img src="assets/images/salad.png" alt="샐러드" class="menu-image">
+                    <div class="menu-info">
+                        <div class="menu-name">샐러드</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vote-action">
+                <button id="voteBtn" disabled>투표하기</button>
+            </div>
+        </section>
+
+        <section id="results" class="results-section">
+            <h2>📊 실시간 투표 현황</h2>
+            <div id="resultsList">
+                <!-- Results will be injected here -->
+                <div class="result-item" data-for="bibimbap">
+                    <div class="result-header">
+                        <span>비빔밥</span>
+                        <span class="percentage">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                </div>
+                <div class="result-item" data-for="tonkatsu">
+                    <div class="result-header">
+                        <span>돈까스</span>
+                        <span class="percentage">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                </div>
+                <div class="result-item" data-for="gukbap">
+                    <div class="result-header">
+                        <span>국밥</span>
+                        <span class="percentage">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                </div>
+                <div class="result-item" data-for="salad">
+                    <div class="result-header">
+                        <span>샐러드</span>
+                        <span class="percentage">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
