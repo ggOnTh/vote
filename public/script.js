@@ -30,14 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(SHEET_URL);
             const csvText = await response.text();
-            
+
             // Simple CSV parsing (assuming menu is in the second column based on subagent analysis)
             // Rows are generally: "timestamp","menu","voter"
             const lines = csvText.split('\n').slice(1); // Skip header
-            
+
             // Reset votes
             Object.keys(votes).forEach(key => votes[key] = 0);
-            
+
             lines.forEach(line => {
                 if (!line.trim()) return;
                 // Match content inside quotes
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Google Apps Script Web App URL (생성한 웹 앱 URL을 여기에 입력하세요)
     // 예: 'https://script.google.com/macros/s/AKfycby.../exec'
-    const GAS_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxQWq21Vf-IZ0MkSJrKZY8A5RlfRtp1L8riJiZ936eV0RCBaaALjq5Q9LkvijZUUsKr/exec';
 
     // Handle Vote (Submits to Google Apps Script Web App)
     voteBtn.addEventListener('click', async () => {
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         voteBtn.disabled = true;
         voteBtn.textContent = '투표 처리 중...';
         menuCards.forEach(c => c.style.pointerEvents = 'none');
-        
+
         try {
             if (GAS_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
                 console.warn('Google Apps Script URL이 설정되지 않았습니다. 시뮬레이션으로 진행합니다.');
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // no-cors 모드에서는 response.ok (opaque)를 직접 확인할 수 없으므로,
             // 에러가 throw 되지 않았다면 성공으로 간주하고 UI를 갱신합니다.
             voteBtn.textContent = '참여 완료';
-            
+
             // 시트에 데이터가 반영되는 약간의 지연 시간을 고려하여 1.5초 후 갱신
             setTimeout(async () => {
                 await fetchVoteData();
@@ -129,18 +129,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateResults() {
         const totalVotes = Object.values(votes).reduce((a, b) => a + b, 0);
-        
+
         Object.keys(votes).forEach(id => {
             const count = votes[id];
             const percentage = totalVotes === 0 ? 0 : Math.round((count / totalVotes) * 100);
             const resultItem = document.querySelector(`.result-item[data-for="${id}"]`);
-            
+
             if (resultItem) {
                 const percentageSpan = resultItem.querySelector('.percentage');
                 const progressBar = resultItem.querySelector('.progress-bar-fill');
-                
+
                 percentageSpan.textContent = `${percentage}% (${count}표)`;
-                
+
                 setTimeout(() => {
                     progressBar.style.width = `${percentage}%`;
                 }, 100);
